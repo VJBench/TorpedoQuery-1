@@ -19,9 +19,8 @@
  */
 package org.torpedoquery.jpa.internal.conditions;
 
-import org.torpedoquery.jpa.internal.Parameter;
 import org.torpedoquery.jpa.internal.Selector;
-public class NotLikeCondition<T> extends LikeCondition<T> {
+public class NotLikeCondition extends LikeCondition {
 
 	/**
 	 * <p>Constructor for NotLikeCondition.</p>
@@ -30,13 +29,14 @@ public class NotLikeCondition<T> extends LikeCondition<T> {
 	 * @param selector a {@link org.torpedoquery.jpa.internal.Selector} object.
 	 * @param toMatch a {@link java.lang.String} object.
 	 */
-	public NotLikeCondition(Selector selector, Parameter<T> parameter) {
-		super(selector,parameter);
+	public NotLikeCondition(Type type, Selector selector, String toMatch) {
+		super(type, selector, toMatch);
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected String getComparator() {
-		return "not " + super.getComparator();
+	protected String getLike() {
+		return "not " + super.getLike();
 	}
 
 }

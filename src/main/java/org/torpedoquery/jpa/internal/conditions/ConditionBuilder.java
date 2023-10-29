@@ -253,9 +253,9 @@ public class ConditionBuilder<T> implements OnGoingComparableCondition<T>, OnGoi
 
 	private LikeCondition createLike(Type type, String toMatch) {
 		if (notLike) {
-			return new NotLikeCondition(selector, selector.generateParameter(type.wrap(toMatch)));
+			return new NotLikeCondition(type, selector, toMatch);
 		} else {
-			return new LikeCondition(selector, selector.generateParameter(type.wrap(toMatch)));
+			return new LikeCondition(type, selector, toMatch);
 		}
 	}
 

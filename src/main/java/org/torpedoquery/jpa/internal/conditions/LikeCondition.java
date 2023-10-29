@@ -19,10 +19,15 @@
  */
 package org.torpedoquery.jpa.internal.conditions;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.torpedoquery.jpa.internal.Condition;
 import org.torpedoquery.jpa.internal.Parameter;
 import org.torpedoquery.jpa.internal.Selector;
 
-public class LikeCondition<T> extends SingleParameterCondition<T> {
+public class LikeCondition implements Condition {
 
 	public static enum Type {
 		ANY {
@@ -53,24 +58,51 @@ public class LikeCondition<T> extends SingleParameterCondition<T> {
 		public abstract String wrap(String toMatch);
 	}
 
+	private final String toMatch;
+	private final Type type;
+	private final Selector selector;
+
 	/**
 	 * <p>
 	 * Constructor for LikeCondition.
 	 * </p>
 	 *
-	 * @param type     a
-	 *                 {@link org.torpedoquery.jpa.internal.conditions.LikeCondition.Type}
-	 *                 object.
-	 * @param selector a {@link org.torpedoquery.jpa.internal.Selector} object.
-	 * @param toMatch  a {@link java.lang.String} object.
+	 * @param type
+	 *            a
+	 *            {@link org.torpedoquery.jpa.internal.conditions.LikeCondition.Type}
+	 *            object.
+	 * @param selector
+	 *            a {@link org.torpedoquery.jpa.internal.Selector} object.
+	 * @param toMatch
+	 *            a {@link java.lang.String} object.
 	 */
-	public LikeCondition(Selector selector, Parameter<T> parameter) {
-		super(selector, parameter);
+	public LikeCondition(Type type, Selector selector, String toMatch) {
+		this.type = type;
+		this.selector = selector;
+		this.toMatch = toMatch;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected String getComparator() {
+	public String createQueryFragment(AtomicInteger incrementor) {
+		return selector.createQueryFragment(incrementor) + " " + getLike() + " '" + type.wrap(toMatch) + "' ";
+	}
+
+	/**
+	 * <p>
+	 * getLike.
+	 * </p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
+	protected String getLike() {
 		return "like";
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Parameter> getParameters() {
+		return Collections.emptyList();
 	}
 
 }
